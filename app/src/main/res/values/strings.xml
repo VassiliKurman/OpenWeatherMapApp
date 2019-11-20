@@ -1,3 +1,60 @@
+<!--Copyright (C) 2018 The Android Open Source Project
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.-->
 <resources>
-    <string name="app_name">OpenWeatherMap App</string>
+    <string name="app_name">OpenWeatherMap</string>
+
+    <!-- Weather -->
+    <string name="id">Id</string>
+    <string name="name">Name</string>
+    <string name="timezone">Timezone</string>
+    <string name="code">Code</string>
+    <string name="date_time">Date/Time</string>
+    <string name="visibility">Visibility</string>
+    <string name="base">Base</string>
+    <string name="main">Main</string>
+    <string name="coordinates">Coordinates</string>
+    <string name="weather">Weather</string>
+    <string name="wind">Wind</string>
+    <string name="clouds">Clouds</string>
+    <string name="system">System</string>
+
+    <!-- Weather Main -->
+    <string name="temp">Temperature</string>
+    <string name="pressure">Pressure</string>
+    <string name="humidity">Humidity</string>
+    <string name="temp_min">Temperature min</string>
+    <string name="temp_max">Temperature max</string>
+
+    <!-- Weather Coordinates -->
+    <string name="lon">Longitude</string>
+    <string name="lat">Latitude</string>
+
+    <!-- Weather Coordinates -->
+    <string name="description">Description</string>
+    <string name="icon">Icon</string>
+
+    <!-- Weather Wind -->
+    <string name="speed">Speed</string>
+    <string name="degree">Degree</string>
+
+    <!-- Weather Clouds -->
+    <string name="all">All</string>
+
+    <!-- Weather System -->
+    <string name="type">Type</string>
+    <string name="country">Country</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+
+    <!-- Error messages -->
+    <string name="error_retrieving_data">Error retrieving weather data from openweathermap.org</string>
+    <string name="error_permission_not_granted">Internet permission not granted</string>
 </resources>

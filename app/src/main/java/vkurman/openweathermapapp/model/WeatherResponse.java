@@ -15,6 +15,12 @@
  */
 package vkurman.openweathermapapp.model;
 
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -25,7 +31,15 @@ import com.google.gson.annotations.SerializedName;
  * Created by Vassili Kurman on 20/11/2019.
  * Version 1.0
  */
+@Entity(tableName = "weatherresponses",
+        indices = {@Index("id")})
 public class WeatherResponse {
+
+    /**
+     * in this implementation primary key is constant
+     */
+    @PrimaryKey
+    public int constID = 1;
 
     /**
      * City ID
@@ -81,6 +95,7 @@ public class WeatherResponse {
      */
     @SerializedName("coord")
     @Expose
+    @Embedded
     private Coord coord;
 
     /**
@@ -88,6 +103,7 @@ public class WeatherResponse {
      */
     @SerializedName("weather")
     @Expose
+    @Ignore
     private Weather[] weather;
 
     /**
@@ -95,6 +111,7 @@ public class WeatherResponse {
      */
     @SerializedName("main")
     @Expose
+    @Embedded
     private Main main;
 
     /**
@@ -102,6 +119,7 @@ public class WeatherResponse {
      */
     @SerializedName("wind")
     @Expose
+    @Embedded
     private Wind wind;
 
     /**
@@ -109,6 +127,7 @@ public class WeatherResponse {
      */
     @SerializedName("clouds")
     @Expose
+    @Embedded
     private Clouds clouds;
 
     /**
@@ -116,6 +135,7 @@ public class WeatherResponse {
      */
     @SerializedName("sys")
     @Expose
+    @Embedded
     private Sys sys;
 
     public int getId() {

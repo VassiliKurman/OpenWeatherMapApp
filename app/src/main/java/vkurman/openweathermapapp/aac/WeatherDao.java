@@ -13,39 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package vkurman.openweathermapapp.model;
+package vkurman.openweathermapapp.aac;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
+import androidx.room.Query;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import vkurman.openweathermapapp.model.Weather;
 
 /**
- * {@link Clouds} data for {@link WeatherResponse}.
+ * {@link WeatherDao} is {@link Dao} interface
  *
  * Created by Vassili Kurman on 20/11/2019.
  * Version 1.0
  */
-@Entity
-public class Clouds {
+@Dao
+public interface WeatherDao {
 
-    @PrimaryKey
-    public int clouds_id;
-    /**
-     * Cloudiness, %
-     */
-    @SerializedName("all")
-    @Expose
-    @ColumnInfo(name = "clouds_all")
-    private int all;
+    @Query("SELECT * FROM weather WHERE weather_id = :weatherId ORDER BY weather_id ASC")
+    Weather[] get(int weatherId);
 
-    public int getAll() {
-        return all;
-    }
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(Weather... weathers);
 
-    public void setAll(int all) {
-        this.all = all;
-    }
+    @Delete
+    void delete(Weather weather);
 }

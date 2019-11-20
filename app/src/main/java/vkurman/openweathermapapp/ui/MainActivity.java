@@ -16,9 +16,14 @@
 package vkurman.openweathermapapp.ui;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -39,6 +44,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vkurman.openweathermapapp.R;
+import vkurman.openweathermapapp.aac.Repository;
+import vkurman.openweathermapapp.aac.WeatherResponseViewModel;
 import vkurman.openweathermapapp.model.WeatherResponse;
 import vkurman.openweathermapapp.retrofit.ApiUtils;
 import vkurman.openweathermapapp.retrofit.OpenWeatherMapService;
@@ -53,8 +60,18 @@ import vkurman.openweathermapapp.utils.OpenWeatherMapUtils;
  */
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * Tag for Log
+     */
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final int PERMISSIONS_REQUEST_INTERNET= 101;
+    /**
+     * Permission Request id
+     */
+    private static final int PERMISSIONS_REQUEST_INTERNET = 101;
+    /**
+     * {@link WeatherResponse} {@link ViewModel}
+     */
+    private WeatherResponseViewModel viewModel;
 
     @BindView(R.id.code) TextView mCode;
     @BindView(R.id.id) TextView mId;
@@ -84,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.weather_icon) ImageView mWeatherIcon;
 
-    private OpenWeatherMapService mService;
+//    private OpenWeatherMapService mService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,111 +110,149 @@ public class MainActivity extends AppCompatActivity {
         // Binding views
         ButterKnife.bind(this);
         // Getting reference to service
-        mService = ApiUtils.getOpenWeatherMapService();
+//        mService = ApiUtils.getOpenWeatherMapService();
         // Checking for INTERNET permission
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.INTERNET)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Requesting the permission
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.INTERNET},
-                    PERMISSIONS_REQUEST_INTERNET);
-        } else {
-            // Loading data
-            loadData();
-        }
-    }
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.INTERNET)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            // Requesting the permission
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.INTERNET},
+//                    PERMISSIONS_REQUEST_INTERNET);
+//        } else {
+//            // Loading data
+//            loadData();
+//        }
 
-    public void loadData() {
-        // Id for London
-        final String cityId = "2643743";
-        // Retrieving appid
-        final Map<String, String> data = new HashMap<>();
-        data.put("id", cityId);
-        data.put("appid", getString(R.string.appid));
-        // Loading data
-        mService.weather(data).enqueue(getWeatherCallback());
-    }
-
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode,
-            @NonNull String[] permissions,
-            @NonNull int[] grantResults) {
-
-        if(requestCode == PERMISSIONS_REQUEST_INTERNET) {
-            // If request is cancelled, the result arrays are empty.
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                loadData();
-            } else {
-                Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    /**
-     * Creates and returns callback for retrofit enqueue method.
-     *
-     * @return - Callback<WeatherResponse>
-     */
-    private Callback<WeatherResponse> getWeatherCallback() {
-        return new Callback<WeatherResponse>() {
-            @Override
-            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, "Data retrieved for " + response.body().getName());
-                    // Changing data
-                    mCode.setText(Integer.toString(response.body().getCod()));
-                    mId.setText(Integer.toString(response.body().getId()));
-                    mName.setText(response.body().getName());
-                    mTimezone.setText(Integer.toString(response.body().getTimezone()));
-                    mDateTime.setText(OpenWeatherMapUtils.convertTimestampToDateString(response.body().getDt()));
-                    mVisibility.setText(Integer.toString(response.body().getVisibility()));
-                    mBase.setText(response.body().getBase());
-                    mMainTemperature.setText(Double.toString(response.body().getMain().getTemp()));
-                    mMainPressure.setText(Integer.toString(response.body().getMain().getPressure()));
-                    mMainHumidity.setText(Integer.toString(response.body().getMain().getHumidity()));
-                    mMainTemperatureMin.setText(Double.toString(response.body().getMain().getTemp_min()));
-                    mMainTemperatureMax.setText(Double.toString(response.body().getMain().getTemp_max()));
-                    mCoordinatesLongitude.setText(Float.toString(response.body().getCoord().getLon()));
-                    mCoordinatesLatitude.setText(Float.toString(response.body().getCoord().getLat()));
-                    mWeatherId.setText(Long.toString(response.body().getWeather()[0].getId()));
-                    mWeatherMain.setText(response.body().getWeather()[0].getMain());
-                    mWeatherDescription.setText(response.body().getWeather()[0].getDescription());
-
-                    mWindSpeed.setText(Float.toString(response.body().getWind().getSpeed()));
-                    mWindDegree.setText(Integer.toString(response.body().getWind().getDeg()));
-                    mCloudsAll.setText(Integer.toString(response.body().getClouds().getAll()));
-                    mSystemType.setText(Integer.toString(response.body().getSys().getType()));
-                    mSystemId.setText(Long.toString(response.body().getSys().getId()));
-                    mSystemCountry.setText(response.body().getSys().getCountry());
-                    mSystemSunrise.setText(OpenWeatherMapUtils.convertTimestampToDateString(response.body().getSys().getSunrise()));
-                    mSystemSunset.setText(OpenWeatherMapUtils.convertTimestampToDateString(response.body().getSys().getSunset()));
-
+        viewModel = ViewModelProviders.of(this).get(WeatherResponseViewModel.class);
+        viewModel.getWeatherResponse().observe(this, weatherResponse -> {
+            if(weatherResponse != null) {
+                mCode.setText(String.valueOf(weatherResponse.getCod()));
+                mId.setText(String.valueOf(weatherResponse.getId()));
+                mName.setText(weatherResponse.getName());
+                mTimezone.setText(String.valueOf(weatherResponse.getTimezone()));
+                mDateTime.setText(OpenWeatherMapUtils.convertTimestampToDateString(weatherResponse.getDt()));
+                mVisibility.setText(String.valueOf(weatherResponse.getVisibility()));
+                mBase.setText(weatherResponse.getBase());
+                mMainTemperature.setText(String.valueOf(weatherResponse.getMain().getTemp()));
+                mMainPressure.setText(String.valueOf(weatherResponse.getMain().getPressure()));
+                mMainHumidity.setText(String.valueOf(weatherResponse.getMain().getHumidity()));
+                mMainTemperatureMin.setText(String.valueOf(weatherResponse.getMain().getTemp_min()));
+                mMainTemperatureMax.setText(String.valueOf(weatherResponse.getMain().getTemp_max()));
+                mCoordinatesLongitude.setText(String.valueOf(weatherResponse.getCoord().getLon()));
+                mCoordinatesLatitude.setText(String.valueOf(weatherResponse.getCoord().getLat()));
+                if(weatherResponse.getWeather() != null && weatherResponse.getWeather().length > 0) {
+                    mWeatherId.setText(String.valueOf(weatherResponse.getWeather()[0].getId()));
+                    mWeatherMain.setText(weatherResponse.getWeather()[0].getMain());
+                    mWeatherDescription.setText(weatherResponse.getWeather()[0].getDescription());
+                    // Loading icon
                     Picasso.get()
                             .load(
-                                    OpenWeatherMapUtils.createIconPath(response.body().getWeather()[0].getIcon()))
+                                    OpenWeatherMapUtils.createIconPath(weatherResponse.getWeather()[0].getIcon()))
                             .into(mWeatherIcon);
-                } else {
-                    int statusCode  = response.code();
-                    // handle request errors depending on status code
-                    Log.e(TAG, "Error status code: " + statusCode);
                 }
+                mWindSpeed.setText(String.valueOf(weatherResponse.getWind().getSpeed()));
+                mWindDegree.setText(String.valueOf(weatherResponse.getWind().getDeg()));
+                mCloudsAll.setText(String.valueOf(weatherResponse.getClouds().getAll()));
+                mSystemType.setText(String.valueOf(weatherResponse.getSys().getType()));
+                mSystemId.setText(String.valueOf(weatherResponse.getSys().getId()));
+                mSystemCountry.setText(weatherResponse.getSys().getCountry());
+                mSystemSunrise.setText(OpenWeatherMapUtils.convertTimestampToDateString(weatherResponse.getSys().getSunrise()));
+                mSystemSunset.setText(OpenWeatherMapUtils.convertTimestampToDateString(weatherResponse.getSys().getSunset()));
             }
-
-            @Override
-            public void onFailure(Call<WeatherResponse> call, Throwable t) {
-                Log.e(TAG, "error loading from API: " + t.getMessage());
-                showErrorMessage();
-            }
-        };
+        });
     }
 
-    /**
-     * Displays error message.
-     */
-    private void showErrorMessage() {
-        Toast.makeText(this, getString(R.string.error_retrieving_data), Toast.LENGTH_SHORT).show();
-    }
+//    public void loadData() {
+//        // Id for London
+//        final String cityId = "2643743";
+//        // Retrieving appid
+//        final Map<String, String> data = new HashMap<>();
+//        data.put("id", cityId);
+//        data.put("appid", getString(R.string.appid));
+//        // Loading data
+//        mService.weather(data).enqueue(getWeatherCallback());
+//    }
+
+//    @Override
+//    public void onRequestPermissionsResult(
+//            int requestCode,
+//            @NonNull String[] permissions,
+//            @NonNull int[] grantResults) {
+//
+//        if(requestCode == PERMISSIONS_REQUEST_INTERNET) {
+//            // If request is cancelled, the result arrays are empty.
+//            if (grantResults.length > 0
+//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                loadData();
+//            } else {
+//                Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
+
+//    /**
+//     * Creates and returns callback for retrofit enqueue method.
+//     *
+//     * @return - Callback<WeatherResponse>
+//     */
+//    private Callback<WeatherResponse> getWeatherCallback() {
+//        return new Callback<WeatherResponse>() {
+//            @Override
+//            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
+//                if(response.isSuccessful()) {
+//                    Log.d(TAG, "Data retrieved for " + response.body().getName());
+//                    // Changing data
+//                    mCode.setText(Integer.toString(response.body().getCod()));
+//                    mId.setText(Integer.toString(response.body().getId()));
+//                    mName.setText(response.body().getName());
+//                    mTimezone.setText(Integer.toString(response.body().getTimezone()));
+//                    mDateTime.setText(OpenWeatherMapUtils.convertTimestampToDateString(response.body().getDt()));
+//                    mVisibility.setText(Integer.toString(response.body().getVisibility()));
+//                    mBase.setText(response.body().getBase());
+//                    mMainTemperature.setText(Double.toString(response.body().getMain().getTemp()));
+//                    mMainPressure.setText(Integer.toString(response.body().getMain().getPressure()));
+//                    mMainHumidity.setText(Integer.toString(response.body().getMain().getHumidity()));
+//                    mMainTemperatureMin.setText(Double.toString(response.body().getMain().getTemp_min()));
+//                    mMainTemperatureMax.setText(Double.toString(response.body().getMain().getTemp_max()));
+//                    mCoordinatesLongitude.setText(Float.toString(response.body().getCoord().getLon()));
+//                    mCoordinatesLatitude.setText(Float.toString(response.body().getCoord().getLat()));
+//                    mWeatherId.setText(Long.toString(response.body().getWeather()[0].getId()));
+//                    mWeatherMain.setText(response.body().getWeather()[0].getMain());
+//                    mWeatherDescription.setText(response.body().getWeather()[0].getDescription());
+//
+//                    mWindSpeed.setText(Float.toString(response.body().getWind().getSpeed()));
+//                    mWindDegree.setText(Integer.toString(response.body().getWind().getDeg()));
+//                    mCloudsAll.setText(Integer.toString(response.body().getClouds().getAll()));
+//                    mSystemType.setText(Integer.toString(response.body().getSys().getType()));
+//                    mSystemId.setText(Long.toString(response.body().getSys().getId()));
+//                    mSystemCountry.setText(response.body().getSys().getCountry());
+//                    mSystemSunrise.setText(OpenWeatherMapUtils.convertTimestampToDateString(response.body().getSys().getSunrise()));
+//                    mSystemSunset.setText(OpenWeatherMapUtils.convertTimestampToDateString(response.body().getSys().getSunset()));
+//
+//                    Picasso.get()
+//                            .load(
+//                                    OpenWeatherMapUtils.createIconPath(response.body().getWeather()[0].getIcon()))
+//                            .into(mWeatherIcon);
+//                } else {
+//                    int statusCode  = response.code();
+//                    // handle request errors depending on status code
+//                    Log.e(TAG, "Error status code: " + statusCode);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<WeatherResponse> call, Throwable t) {
+//                Log.e(TAG, "error loading from API: " + t.getMessage());
+//                showErrorMessage();
+//            }
+//        };
+//    }
+//
+//    /**
+//     * Displays error message.
+//     */
+//    private void showErrorMessage() {
+//        Toast.makeText(this, getString(R.string.error_retrieving_data), Toast.LENGTH_SHORT).show();
+//    }
 }

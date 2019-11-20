@@ -15,6 +15,10 @@
  */
 package vkurman.openweathermapapp.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -24,13 +28,17 @@ import com.google.gson.annotations.SerializedName;
  * Created by Vassili Kurman on 20/11/2019.
  * Version 1.0
  */
+@Entity
 public class Main {
 
+    @PrimaryKey
+    public int main_id;
     /**
      * Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.
      */
     @SerializedName("temp")
     @Expose
+    @ColumnInfo(name = "main_temp")
     private double temp;
 
     /**
@@ -38,6 +46,7 @@ public class Main {
      */
     @SerializedName("pressure")
     @Expose
+    @ColumnInfo(name = "main_pressure")
     private int pressure;
 
     /**
@@ -45,6 +54,7 @@ public class Main {
      */
     @SerializedName("humidity")
     @Expose
+    @ColumnInfo(name = "main_humidity")
     private int humidity;
 
     /**
@@ -54,6 +64,7 @@ public class Main {
      */
     @SerializedName("temp_min")
     @Expose
+    @ColumnInfo(name = "main_temp_min")
     private double temp_min;
 
     /**
@@ -63,6 +74,7 @@ public class Main {
      */
     @SerializedName("temp_max")
     @Expose
+    @ColumnInfo(name = "main_temp_max")
     private double temp_max;
 
     /**
@@ -70,6 +82,7 @@ public class Main {
      */
     @SerializedName("sea_level")
     @Expose
+    @ColumnInfo(name = "main_sea_level")
     private int sea_level;
 
     /**
@@ -77,6 +90,7 @@ public class Main {
      */
     @SerializedName("grnd_level")
     @Expose
+    @ColumnInfo(name = "main_grnd_level")
     private int grnd_level;
 
     public double getTemp() {

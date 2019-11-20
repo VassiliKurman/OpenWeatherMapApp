@@ -15,6 +15,10 @@
  */
 package vkurman.openweathermapapp.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -24,18 +28,25 @@ import com.google.gson.annotations.SerializedName;
  * Created by Vassili Kurman on 20/11/2019.
  * Version 1.0
  */
+@Entity
 public class Wind {
+
+    @PrimaryKey
+    public int wind_id;
+
     /**
      * Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
      */
     @SerializedName("speed")
     @Expose
+    @ColumnInfo(name = "wind_speed")
     private float speed;
     /**
      * Wind direction, degrees (meteorological)
      */
     @SerializedName("deg")
     @Expose
+    @ColumnInfo(name = "wind_deg")
     private int deg;
 
     public float getSpeed() {

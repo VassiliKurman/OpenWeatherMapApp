@@ -15,6 +15,11 @@
  */
 package vkurman.openweathermapapp.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -24,6 +29,8 @@ import com.google.gson.annotations.SerializedName;
  * Created by Vassili Kurman on 20/11/2019.
  * Version 1.0
  */
+@Entity(tableName = "weather",
+        indices = {@Index("weather_id")})
 public class Weather {
 
     /**
@@ -31,6 +38,8 @@ public class Weather {
      */
     @SerializedName("id")
     @Expose
+    @PrimaryKey
+    @ColumnInfo(name = "weather_id")
     private long id;
 
     /**
@@ -38,6 +47,7 @@ public class Weather {
      */
     @SerializedName("main")
     @Expose
+    @ColumnInfo(name = "weather_main")
     private String main;
 
     /**
@@ -45,6 +55,7 @@ public class Weather {
      */
     @SerializedName("description")
     @Expose
+    @ColumnInfo(name = "weather_description")
     private String description;
 
     /**
@@ -52,6 +63,7 @@ public class Weather {
      */
     @SerializedName("icon")
     @Expose
+    @ColumnInfo(name = "weather_icon")
     private String icon;
 
     public long getId() {

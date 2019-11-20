@@ -15,6 +15,10 @@
  */
 package vkurman.openweathermapapp.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -24,13 +28,18 @@ import com.google.gson.annotations.SerializedName;
  * Created by Vassili Kurman on 20/11/2019.
  * Version 1.0
  */
+@Entity
 public class Sys {
+
+    @PrimaryKey
+    public int sys_primary_id;
 
     /**
      * Internal parameter
      */
     @SerializedName("type")
     @Expose
+    @ColumnInfo(name = "sys_type")
     private int type;
 
     /**
@@ -38,6 +47,7 @@ public class Sys {
      */
     @SerializedName("id")
     @Expose
+    @ColumnInfo(name = "sys_id")
     private long id;
 
     /**
@@ -45,6 +55,7 @@ public class Sys {
      */
     @SerializedName("message")
     @Expose
+    @ColumnInfo(name = "sys_message")
     private double message;
 
     /**
@@ -52,6 +63,7 @@ public class Sys {
      */
     @SerializedName("country")
     @Expose
+    @ColumnInfo(name = "sys_country")
     private String country;
 
     /**
@@ -59,6 +71,7 @@ public class Sys {
      */
     @SerializedName("sunrise")
     @Expose
+    @ColumnInfo(name = "sys_sunrise")
     private long sunrise;
 
     /**
@@ -66,6 +79,7 @@ public class Sys {
      */
     @SerializedName("sunset")
     @Expose
+    @ColumnInfo(name = "sys_sunset")
     private long sunset;
 
     public int getType() {

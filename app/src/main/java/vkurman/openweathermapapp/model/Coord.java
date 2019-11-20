@@ -15,6 +15,11 @@
  */
 package vkurman.openweathermapapp.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -24,13 +29,17 @@ import com.google.gson.annotations.SerializedName;
  * Created by Vassili Kurman on 20/11/2019.
  * Version 1.0
  */
+@Entity
 public class Coord {
 
+    @PrimaryKey
+    public int coord_id;
     /**
      * City geo location, longitude
      */
     @SerializedName("lon")
     @Expose
+    @ColumnInfo(name = "coord_lon")
     private float lon;
 
     /**
@@ -38,6 +47,7 @@ public class Coord {
      */
     @SerializedName("lat")
     @Expose
+    @ColumnInfo(name = "coord_lat")
     private float lat;
 
     public float getLon() {

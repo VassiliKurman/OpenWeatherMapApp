@@ -166,8 +166,6 @@ public class MainActivity extends AppCompatActivity {
                     mWeatherMain.setText(response.body().getWeather()[0].getMain());
                     mWeatherDescription.setText(response.body().getWeather()[0].getDescription());
 
-//                    mWeatherIcon.setText(response.body().getWeather()[0].getIcon());
-
                     mWindSpeed.setText(Float.toString(response.body().getWind().getSpeed()));
                     mWindDegree.setText(Integer.toString(response.body().getWind().getDeg()));
                     mCloudsAll.setText(Integer.toString(response.body().getClouds().getAll()));

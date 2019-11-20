@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     mId.setText(Integer.toString(response.body().getId()));
                     mName.setText(response.body().getName());
                     mTimezone.setText(Integer.toString(response.body().getTimezone()));
-                    mDateTime.setText(Long.toString(response.body().getDt()));
+                    mDateTime.setText(OpenWeatherMapUtils.convertTimestampToDateString(response.body().getDt()));
                     mVisibility.setText(Integer.toString(response.body().getVisibility()));
                     mBase.setText(response.body().getBase());
                     mMainTemperature.setText(Double.toString(response.body().getMain().getTemp()));
@@ -172,8 +172,8 @@ public class MainActivity extends AppCompatActivity {
                     mSystemType.setText(Integer.toString(response.body().getSys().getType()));
                     mSystemId.setText(Long.toString(response.body().getSys().getId()));
                     mSystemCountry.setText(response.body().getSys().getCountry());
-                    mSystemSunrise.setText(Long.toString(response.body().getSys().getSunrise()));
-                    mSystemSunset.setText(Long.toString(response.body().getSys().getSunset()));
+                    mSystemSunrise.setText(OpenWeatherMapUtils.convertTimestampToDateString(response.body().getSys().getSunrise()));
+                    mSystemSunset.setText(OpenWeatherMapUtils.convertTimestampToDateString(response.body().getSys().getSunset()));
 
                     Picasso.get()
                             .load(

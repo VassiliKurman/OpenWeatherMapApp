@@ -15,6 +15,8 @@
  */
 package vkurman.openweathermapapp.utils;
 
+import java.util.Date;
+
 /**
  * {@link OpenWeatherMapUtils} is a small utility class with static methods.
  *
@@ -30,4 +32,7 @@ public class OpenWeatherMapUtils {
         return BASE_ICON_URL + icon + BASE_ICON_EXTENSION;
     }
 
+    public static String convertTimestampToDateString(long timestampSeconds) {
+        return new Date(timestampSeconds * 1000).toString();
+    }
 }

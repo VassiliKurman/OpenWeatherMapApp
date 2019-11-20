@@ -40,6 +40,7 @@
     <!-- Weather Coordinates -->
     <string name="description">Description</string>
     <string name="icon">Icon</string>
+    <string name="icon_description">Weather Condition Icon</string>
 
     <!-- Weather Wind -->
     <string name="speed">Speed</string>

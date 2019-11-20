@@ -24,8 +24,11 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +42,7 @@ import vkurman.openweathermapapp.R;
 import vkurman.openweathermapapp.model.WeatherResponse;
 import vkurman.openweathermapapp.retrofit.ApiUtils;
 import vkurman.openweathermapapp.retrofit.OpenWeatherMapService;
+import vkurman.openweathermapapp.utils.OpenWeatherMapUtils;
 
 /**
  * {@link MainActivity} is an {@link AppCompatActivity} that is displayed at
@@ -67,9 +71,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.coordinates_longitude) TextView mCoordinatesLongitude;
     @BindView(R.id.coordinates_latitude) TextView mCoordinatesLatitude;
     @BindView(R.id.weather_id) TextView mWeatherId;
-    @BindView(R.id.weather_main) TextView getmWeatherMain;
-    @BindView(R.id.weather_description) TextView getmWeatherDescription;
-    @BindView(R.id.weather_icon) TextView getmWeatherIcon;
+    @BindView(R.id.weather_main) TextView mWeatherMain;
+    @BindView(R.id.weather_description) TextView mWeatherDescription;
     @BindView(R.id.wind_speed) TextView mWindSpeed;
     @BindView(R.id.wind_degree) TextView mWindDegree;
     @BindView(R.id.clouds_all) TextView mCloudsAll;
@@ -78,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.system_country) TextView mSystemCountry;
     @BindView(R.id.system_sunrise) TextView mSystemSunrise;
     @BindView(R.id.system_sunset) TextView mSystemSunset;
+
+    @BindView(R.id.weather_icon) ImageView mWeatherIcon;
 
     private OpenWeatherMapService mService;
 
@@ -158,9 +163,11 @@ public class MainActivity extends AppCompatActivity {
                     mCoordinatesLongitude.setText(Float.toString(response.body().getCoord().getLon()));
                     mCoordinatesLatitude.setText(Float.toString(response.body().getCoord().getLat()));
                     mWeatherId.setText(Long.toString(response.body().getWeather()[0].getId()));
-                    getmWeatherMain.setText(response.body().getWeather()[0].getMain());
-                    getmWeatherDescription.setText(response.body().getWeather()[0].getDescription());
-                    getmWeatherIcon.setText(response.body().getWeather()[0].getIcon());
+                    mWeatherMain.setText(response.body().getWeather()[0].getMain());
+                    mWeatherDescription.setText(response.body().getWeather()[0].getDescription());
+
+//                    mWeatherIcon.setText(response.body().getWeather()[0].getIcon());
+
                     mWindSpeed.setText(Float.toString(response.body().getWind().getSpeed()));
                     mWindDegree.setText(Integer.toString(response.body().getWind().getDeg()));
                     mCloudsAll.setText(Integer.toString(response.body().getClouds().getAll()));
@@ -169,6 +176,11 @@ public class MainActivity extends AppCompatActivity {
                     mSystemCountry.setText(response.body().getSys().getCountry());
                     mSystemSunrise.setText(Long.toString(response.body().getSys().getSunrise()));
                     mSystemSunset.setText(Long.toString(response.body().getSys().getSunset()));
+
+                    Picasso.get()
+                            .load(
+                                    OpenWeatherMapUtils.createIconPath(response.body().getWeather()[0].getIcon()))
+                            .into(mWeatherIcon);
                 } else {
                     int statusCode  = response.code();
                     // handle request errors depending on status code

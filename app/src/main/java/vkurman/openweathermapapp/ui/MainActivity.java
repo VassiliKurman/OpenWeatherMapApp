@@ -27,16 +27,29 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,9 +59,12 @@ import retrofit2.Response;
 import vkurman.openweathermapapp.R;
 import vkurman.openweathermapapp.aac.Repository;
 import vkurman.openweathermapapp.aac.WeatherResponseViewModel;
+import vkurman.openweathermapapp.adapters.CityAdapter;
+import vkurman.openweathermapapp.model.City;
 import vkurman.openweathermapapp.model.WeatherResponse;
 import vkurman.openweathermapapp.retrofit.ApiUtils;
 import vkurman.openweathermapapp.retrofit.OpenWeatherMapService;
+import vkurman.openweathermapapp.utils.CityJsonUtils;
 import vkurman.openweathermapapp.utils.OpenWeatherMapUtils;
 
 /**
@@ -58,7 +74,8 @@ import vkurman.openweathermapapp.utils.OpenWeatherMapUtils;
  * Created by Vassili Kurman on 20/11/2019.
  * Version 1.0
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
+        View.OnClickListener {
 
     /**
      * Tag for Log
@@ -68,10 +85,17 @@ public class MainActivity extends AppCompatActivity {
      * Permission Request id
      */
     private static final int PERMISSIONS_REQUEST_INTERNET = 101;
+
+    private CityAdapter cityAdapter;
+
     /**
      * {@link WeatherResponse} {@link ViewModel}
      */
     private WeatherResponseViewModel viewModel;
+
+//    @BindView(R.id.cities) Spinner mCities;
+    @BindView(R.id.ed_city_id) EditText edCity;
+    @BindView(R.id.btn_load) Button load;
 
     @BindView(R.id.code) TextView mCode;
     @BindView(R.id.id) TextView mId;
@@ -124,6 +148,48 @@ public class MainActivity extends AppCompatActivity {
 //            loadData();
 //        }
 
+        // Create an ArrayAdapter using the string array and a default spinner layout
+//        cityAdapter = new CityAdapter(this,
+//                R.layout.city_layout,
+//                R.id.city_name,
+//                new ArrayList<>());
+//        // Specify the layout to use when the list of choices appears
+//        cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        // Apply the adapter to the spinner
+//        mCities.setAdapter(cityAdapter);
+//        mCities.setOnItemSelectedListener(this);
+
+        load.setOnClickListener(this);
+
+//        new AsyncTask<Void, Void, List<City>>() {
+//
+//            @Override
+//            protected List<City> doInBackground(Void... voids) {
+//                Log.e(TAG, "Reading file ...");
+//                List<City> list = new ArrayList<>();
+//                try(BufferedReader reader = new BufferedReader(
+//                        new InputStreamReader(getResources().openRawResource(R.raw.city)));) {
+//                    StringBuffer builder = new StringBuffer();
+//                    String line = reader.readLine();
+//                    while (line != null) {
+//                        Log.e(TAG, line);
+//                        builder.append(line);
+//                        line = reader.readLine();
+//                    }
+//                    list.addAll(CityJsonUtils.parseCityJson(builder.toString()));
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                Log.e(TAG, "List: " + list.size());
+//                return list;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(List<City> list) {
+//                cityAdapter.updateCities(list);
+//            }
+//        }.execute();
+
         viewModel = ViewModelProviders.of(this).get(WeatherResponseViewModel.class);
         viewModel.getWeatherResponse().observe(this, weatherResponse -> {
             if(weatherResponse != null) {
@@ -161,6 +227,28 @@ public class MainActivity extends AppCompatActivity {
                 mSystemSunset.setText(OpenWeatherMapUtils.convertTimestampToDateString(weatherResponse.getSys().getSunset()));
             }
         });
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        final City city = cityAdapter.getCity(position);
+        // Requesting to update data
+        viewModel.getRepository().getWeatherResponse(getApplicationContext(), city.getId());
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Do nothing at the moment
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v == load) {
+            int id = Integer.parseInt(edCity.getText().toString());
+            edCity.setText("");
+            // Requesting to update data
+            viewModel.getRepository().getWeatherResponse(getApplicationContext(), id);
+        }
     }
 
 //    public void loadData() {

@@ -32,6 +32,7 @@
     <string name="humidity">Humidity</string>
     <string name="temp_min">Temperature min</string>
     <string name="temp_max">Temperature max</string>
+    <string name="btn_load">Load</string>
 
     <!-- Weather Coordinates -->
     <string name="lon">Longitude</string>

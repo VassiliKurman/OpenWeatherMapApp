@@ -47,4 +47,9 @@ public class WeatherResponseViewModel extends AndroidViewModel {
     public void insert(WeatherResponse weatherResponse) {
         mRepository.insert(weatherResponse);
     }
+
+    public Repository getRepository() {
+        return mRepository;
+    }
+
 }
